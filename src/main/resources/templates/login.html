@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - PALANT S.A.C</title>
+    <link rel="icon" type="image/png" th:href="@{/assets/favicon_square.png}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="auth-wrapper">
+    <div class="login-card">
+        <div class="login-header">
+            <h2>PALANT S.A.C.</h2>
+            <p style="margin:0; font-size: 14px;">Acceso de Clientes</p>
+        </div>
+        <div class="login-body">
+            <h3 style="text-align: center;">Iniciar Sesión</h3>
+            <p th:if="${error}" th:text="${error}" style="color: red; text-align: center;"></p>
+            <p th:if="${param.registrado}" style="color: green; text-align: center;">Registro exitoso. Inicia sesión.</p>
+            
+            <form th:action="@{/login}" method="post">
+                <label style="font-size:12px; color:#64748b; font-weight:bold;">Usuario (Correo)</label>
+                <input type="email" name="correo" class="form-control" placeholder="Ingrese su correo" required>
+                
+                <label style="font-size:12px; color:#64748b; font-weight:bold;">Contraseña</label>
+                <input type="password" name="contrasena" class="form-control" placeholder="Ingrese su contraseña" required>
+                
+                <button type="submit" class="btn" style="width: 100%;">Acceder</button>
+            </form>
+            <div style="text-align: center; margin-top: 15px;">
+                <a th:href="@{/registro}" style="color: var(--primary); text-decoration:underline; font-weight:bold; font-size:14px;">¿No tienes cuenta? Regístrate aquí</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>listado</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container">
+    <h2>Listado de Alumnos</h2>
+    <table class="table">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Celular</th>
+            <th>Correo</th>
+            <th>Acciones</th>
+        </tr>
+        <!--Se crea una variable alumno que toma cada elemento de la lista listaAlumno-->
+        <tr th:each="alumno:${listaAlumno}">
+            <td th:text="${alumno.idalumno}"></td>
+            <td th:text="${alumno.nombre}"></td>
+            <td th:text="${alumno.apellido}"></td>
+            <td th:text="${alumno.celular}"></td>
+            <td th:text="${alumno.correo}"></td>
+            <td>
+            	<a th:href="@{/editar/{id}(id=${alumno.idalumno})}">
+            		Editar
+            	</a>
+            	<a th:href="@{/borrar/{id}(id=${alumno.idalumno})}">
+            		Borrar
+            	</a>
+            </td>
+        </tr>
+    </table>
+    <button>
+		<a th:href="@{/nuevoAlumno}">
+			Agregar Alumno
+		</a>
+	</button>
+</div>
+</body>
+</html>

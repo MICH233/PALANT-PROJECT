@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Pagos y Pedidos</title>
+    <link rel="icon" type="image/png" th:href="@{/assets/favicon_square.png}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="admin-nav">
+        <div>
+            <h2 style="margin: 0; display: inline-block;">PALANT S.A.C.</h2>
+            <span style="font-size: 12px; margin-left: 10px; color: rgba(255,255,255,0.7);">Panel de Control</span>
+        </div>
+        <div class="admin-nav-links">
+            <a th:href="@{/admin/productos}">Productos</a>
+            <a th:href="@{/admin/pedidos}" class="active">
+                Pagos y Pedidos
+                <span th:if="${pendientesCount != null and pendientesCount > 0}" th:text="${pendientesCount}" style="background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; margin-left: 5px;"></span>
+            </a>
+            <a th:href="@{/admin/banners}">Banners</a>
+            <a th:href="@{/admin/logout}" class="btn" style="color:var(--nav-gradient);">Cerrar Sesión</a>
+        </div>
+    </div>
+
+    <div class="container" style="max-width:1400px;">
+        <h1>Gestión de Pagos</h1>
+        
+        <div class="list-section">
+            <table class="prod-table">
+                <thead>
+                    <tr>
+                        <th>Pedido</th>
+                        <th>Cliente</th>
+                        <th>Total</th>
+                        <th>Método</th>
+                        <th>Cód. Voucher</th>
+                        <th>Voucher (Foto)</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="p : ${pedidos}">
+                        <td th:text="'#' + ${p.idPedido}"></td>
+                        <td>
+                            <strong th:text="${p.cliente.nombres + ' ' + p.cliente.apellidos}"></strong><br>
+                            <small th:text="'Cel: ' + ${p.cliente.celular}" style="color:#64748b;"></small>
+                        </td>
+                        <td th:text="'S/ ' + ${p.montoTotal}"></td>
+                        <td th:text="${p.metodoPago}"></td>
+                        <td th:text="${p.codigoVoucher}" style="font-family: monospace; color: var(--accent); font-weight: bold;"></td>
+                        <td>
+                            <a th:if="${p.imagenVoucher != null}" th:href="${p.imagenVoucher}" target="_blank">
+                                <img th:src="${p.imagenVoucher}" style="width:60px; height:60px; object-fit:cover; border-radius:5px; border:1px solid #cbd5e1;">
+                            </a>
+                            <span th:if="${p.imagenVoucher == null}" style="color:#94a3b8; font-size:12px;">Sin Imagen</span>
+                        </td>
+                        <td th:text="${p.estado}"></td>
+                        <td>
+                            <form th:action="@{/admin/pedidos/validar}" method="post" th:if="${p.estado == 'Pendiente'}">
+                                <input type="hidden" name="idPedido" th:value="${p.idPedido}">
+                                <div style="display:flex; gap:5px; flex-direction:column;">
+                                    <input type="submit" name="accion" value="Aprobar" class="btn" style="padding: 5px 10px; font-size: 12px;">
+                                    <input type="submit" name="accion" value="Rechazar" class="btn" style="padding: 5px 10px; font-size: 12px; background: #ef4444; color: white;">
+                                </div>
+                            </form>
+                            <div th:if="${p.estado != 'Pendiente'}">
+                                <span style="color: #94a3b8; font-size:12px; font-weight:bold; display:block; margin-bottom:5px;">COMPLETADO</span>
+                                <a th:if="${p.estado == 'Validado'}" th:href="@{/boleta/{id}(id=${p.idPedido})}" target="_blank" class="btn" style="padding: 3px 8px; font-size: 11px; background:var(--nav-gradient); color:white; text-decoration:none;">📄 Ver Boleta</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

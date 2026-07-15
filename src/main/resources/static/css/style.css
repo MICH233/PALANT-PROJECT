@@ -1,0 +1,219 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+:root {
+    --bg-light: #f8fafc;
+    --card-bg: #ffffff;
+    --accent: #8AD93B; 
+    --accent-hover: #9ced4f;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --nav-gradient: linear-gradient(135deg, #104573 0%, #082B59 100%);
+}
+
+body {
+    background-color: var(--bg-light);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+h1, h2 {
+    color: #104573;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(138, 217, 59, 0.2);
+}
+
+.btn {
+    background: var(--accent);
+    color: #082B59;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+.btn:hover {
+    background: var(--accent-hover);
+    transform: scale(1.02);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+.form-control {
+    width: 100%;
+    padding: 10px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #333;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+.form-control:focus {
+    outline: none;
+    border-color: #104573;
+    box-shadow: 0 0 5px rgba(16, 69, 115, 0.3);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+th {
+    color: #104573;
+    background-color: #f1f5f9;
+}
+
+/* =========================================
+   LOGIN & REGISTRO STYLES
+   ========================================= */
+.auth-wrapper {
+    display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #e2e8f0;
+}
+.login-card {
+    background: white; border-radius: 10px; width: 400px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+.login-card.wide {
+    width: 500px;
+}
+.login-header {
+    background: var(--nav-gradient); color: white; text-align: center; padding: 30px 20px;
+}
+.login-header h2 {
+    color: white; margin-bottom: 5px;
+}
+.login-body {
+    padding: 30px; color: #333;
+}
+.login-body .form-control {
+    margin-bottom: 20px;
+}
+
+/* =========================================
+   ADMIN PANEL STYLES
+   ========================================= */
+.admin-nav {
+    background: var(--nav-gradient); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.admin-nav h2 {
+    color: white;
+}
+.admin-nav-links a {
+    color: white; text-decoration: none; margin-right: 20px; font-weight: 600; opacity: 0.8; transition: opacity 0.3s;
+}
+.admin-nav-links a:hover, .admin-nav-links a.active {
+    opacity: 1; color: var(--accent);
+}
+.content-grid {
+    display: grid; grid-template-columns: 350px 1fr; gap: 30px; margin-top: 20px;
+}
+.form-section, .list-section {
+    background: white; border-radius: 12px; padding: 25px; color: #333; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
+}
+.form-section label {
+    font-size: 13px; font-weight: bold; color: #475569; margin-bottom: 5px; display: block;
+}
+.prod-table {
+    width: 100%; border-collapse: collapse; margin-top:0;
+}
+.prod-table img {
+    width: 50px; height: 50px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* =========================================
+   CATALOGO & CARRITO STYLES
+   ========================================= */
+.top-nav {
+    background: var(--nav-gradient); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.top-nav a {
+    color: white; text-decoration: none; margin-left: 20px; font-weight: bold; transition: color 0.3s;
+}
+.top-nav a:hover {
+    color: var(--accent);
+}
+.hero {
+    background: var(--nav-gradient); color: white; text-align: center; padding: 50px 20px; margin-top: 20px; border-radius: 12px; font-size: 26px; font-weight: 800; box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.category-tabs {
+    margin-top: 20px; display: flex; gap: 10px; justify-content: center;
+}
+.tab {
+    background: #e2e8f0; color: #475569; padding: 10px 25px; border-radius: 30px; font-weight: bold; text-decoration: none; transition: all 0.3s;
+}
+.tab:hover {
+    background: #cbd5e1;
+}
+.tab.active {
+    background: var(--nav-gradient); color: white; box-shadow: 0 4px 6px rgba(16, 69, 115, 0.3);
+}
+.prod-card {
+    background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); color: #333; transition: transform 0.3s, box-shadow 0.3s; border: 1px solid #e2e8f0;
+}
+.prod-card:hover {
+    transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+}
+.prod-img {
+    width: 100%; height: 250px; object-fit: cover; border-bottom: 1px solid #e2e8f0;
+}
+.prod-info {
+    padding: 20px; 
+}
+.prod-info h3 {
+    margin: 0; font-size: 18px; color: #1e293b; 
+}
+.prod-info p {
+    color: #64748b; font-size: 14px; margin-top: 5px; 
+}
+.add-btn {
+    background: var(--accent); color: #082B59; border: none; width: 100%; padding: 12px; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 15px; transition: background 0.3s, transform 0.2s; 
+}
+.add-btn:hover {
+    background: var(--accent-hover); transform: scale(1.02);
+}
+
+.cart-table {
+    background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); width: 100%; border-collapse: collapse; margin-top:0; border: 1px solid #e2e8f0;
+}
+.cart-table th {
+    background: #f1f5f9; color: #104573; padding: 15px; border-bottom: 2px solid #cbd5e1;
+}
+.cart-table td {
+    padding: 15px; border-bottom: 1px solid #e2e8f0; color:#333;
+}
+.checkout-card {
+    background: white; border-radius: 12px; padding: 30px; margin-top: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); color: #333; border: 1px solid #e2e8f0;
+}

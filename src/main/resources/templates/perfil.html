@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Perfil - PALANT S.A.C</title>
+    <link rel="icon" type="image/png" th:href="@{/assets/favicon_square.png}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="top-nav">
+        <div>
+            <span style="font-weight: 800; font-size: 20px; color: white;">PALANT</span>
+            <a th:href="@{/catalogo}">Volver al Catálogo</a>
+        </div>
+    </div>
+
+    <div class="container" style="max-width: 1100px; margin-top:30px; display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+        <div class="list-section">
+            <h2 style="margin-top:0; border-bottom: 2px solid #e2e8f0; padding-bottom:10px;">Configuración de Perfil</h2>
+            
+            <div th:if="${param.exito}" style="background: var(--accent); color: #082B59; padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold;">
+                ¡Perfil actualizado correctamente!
+            </div>
+            
+            <form th:action="@{/perfil/actualizar}" th:object="${cliente}" method="post" enctype="multipart/form-data">
+                
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img th:if="${cliente.fotoPerfil != null}" th:src="${cliente.fotoPerfil}" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div th:if="${cliente.fotoPerfil == null}" style="width: 120px; height: 120px; border-radius: 50%; background: #e2e8f0; display:inline-flex; align-items:center; justify-content:center; border: 3px solid #cbd5e1; color: #94a3b8;">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
+                    <br><br>
+                    <label style="font-size:12px; font-weight:bold; color:#475569;">Cambiar Avatar (Opcional)</label>
+                    <input type="file" name="archivoFoto" class="form-control" accept="image/*" style="width: 80%; margin: 0 auto;">
+                </div>
+                
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px;">
+                    <div>
+                        <label style="font-size:12px; font-weight:bold; color:#475569;">Nombres</label>
+                        <input type="text" th:field="*{nombres}" class="form-control" required>
+                    </div>
+                    <div>
+                        <label style="font-size:12px; font-weight:bold; color:#475569;">Apellidos</label>
+                        <input type="text" th:field="*{apellidos}" class="form-control" required>
+                    </div>
+                </div>
+                
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px;">
+                    <div>
+                        <label style="font-size:12px; font-weight:bold; color:#475569;">Celular</label>
+                        <input type="text" th:field="*{celular}" class="form-control" required>
+                    </div>
+                    <div>
+                        <label style="font-size:12px; font-weight:bold; color:#475569;">Contraseña</label>
+                        <input type="text" th:field="*{contrasena}" class="form-control" required>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom:15px;">
+                    <label style="font-size:12px; font-weight:bold; color:#94a3b8;">Correo (No editable)</label>
+                    <input type="text" th:field="*{correo}" class="form-control" disabled style="background:#f1f5f9; cursor:not-allowed;">
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Guardar Cambios</button>
+            </form>
+        </div>
+        
+        <div class="list-section">
+            <h2 style="margin-top:0; border-bottom: 2px solid #e2e8f0; padding-bottom:10px;">Historial de Pedidos</h2>
+            
+            <table class="cart-table" th:if="${pedidos != null and !pedidos.isEmpty()}">
+                <tr>
+                    <th>ID Pedido</th>
+                    <th>Fecha</th>
+                    <th>Método</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                </tr>
+                <tr th:each="p : ${pedidos}">
+                    <td th:text="'#' + ${p.idPedido}"></td>
+                    <td th:text="${#dates.format(p.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${p.metodoPago}"></td>
+                    <td th:text="'S/ ' + ${p.montoTotal}"></td>
+                    <td>
+                        <span th:if="${p.estado == 'Pendiente'}" style="background: #fef08a; color: #854d0e; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">Pendiente</span>
+                        <div th:if="${p.estado == 'Validado'}" style="display: flex; align-items: center; gap: 10px;">
+                            <span style="background: #bbf7d0; color: #166534; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">Validado</span>
+                            <a th:href="@{/boleta/{id}(id=${p.idPedido})}" target="_blank" class="btn" style="padding: 3px 8px; font-size: 11px; background:var(--nav-gradient); color:white; text-decoration:none;">📄 Ver Boleta</a>
+                        </div>
+                        <span th:if="${p.estado == 'Cancelado'}" style="background: #fecaca; color: #991b1b; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">Cancelado</span>
+                    </td>
+                </tr>
+            </table>
+            
+            <div th:if="${pedidos == null or pedidos.isEmpty()}" style="text-align:center; padding: 30px; color: #64748b;">
+                No has realizado ningún pedido todavía.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

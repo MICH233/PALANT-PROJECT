@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro - PALANT S.A.C</title>
+    <link rel="icon" type="image/png" th:href="@{/assets/favicon_square.png}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="auth-wrapper">
+    <div class="login-card wide">
+        <div class="login-header">
+            <h2>PALANT S.A.C.</h2>
+            <p style="margin:0; font-size: 14px;">Registro de Clientes</p>
+        </div>
+        <div class="login-body">
+            <form th:action="@{/registro}" th:object="${cliente}" method="post">
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div>
+                        <label>Nombres</label>
+                        <input type="text" th:field="*{nombres}" class="form-control" required>
+                    </div>
+                    <div>
+                        <label>Apellidos</label>
+                        <input type="text" th:field="*{apellidos}" class="form-control" required>
+                    </div>
+                </div>
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div>
+                        <label>DNI</label>
+                        <input type="text" th:field="*{dni}" class="form-control" required>
+                    </div>
+                    <div>
+                        <label>Celular</label>
+                        <input type="text" th:field="*{celular}" class="form-control" required>
+                    </div>
+                </div>
+                <label>Correo Electrónico</label>
+                <input type="email" th:field="*{correo}" class="form-control" required>
+                
+                <label>Contraseña</label>
+                <input type="password" th:field="*{contrasena}" class="form-control" required>
+                
+                <button type="submit" class="btn" style="width: 100%;">Registrarse</button>
+            </form>
+            <div style="text-align: center; margin-top: 15px;">
+                <a th:href="@{/login}" style="color: var(--card-bg); text-decoration:none; font-size:14px;">Volver al Login</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

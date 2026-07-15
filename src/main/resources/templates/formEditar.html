@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<form th:action="@{/actualizar}" th:object="${alumno}" method="post">
+
+    <!-- Campo oculto: imprescindible para saber a QUIÉN actualizar -->
+    <input type="hidden" th:field="*{idalumno}">
+
+    <label>Nombre:</label>
+    <input type="text" th:field="*{nombre}">
+
+    <label>Apellido:</label>
+    <input type="text" th:field="*{apellido}">
+
+    <label>Celular:</label>
+    <input type="text" th:field="*{celular}">
+
+    <label>Correo:</label>
+    <input type="email" th:field="*{correo}">
+
+    <button type="submit">Actualizar</button>
+</form>
+</body>
+</html>

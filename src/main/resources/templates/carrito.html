@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Carrito de Compras</title>
+    <link rel="icon" type="image/png" th:href="@{/assets/favicon_square.png}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="top-nav">
+        <div>
+            <span style="font-weight: 800; font-size: 20px; color: white;">PALANT</span>
+            <a th:href="@{/catalogo}">Volver al Catálogo</a>
+        </div>
+        <div>
+            <a th:if="${session.usuarioLogueado == null}" th:href="@{/login}" class="btn" style="color: var(--nav-gradient); padding: 5px 15px;">Iniciar sesión</a>
+            <a th:if="${session.usuarioLogueado != null}" th:href="@{/perfil}" style="display:flex; align-items:center; gap:10px;">
+                <img th:if="${session.usuarioLogueado.fotoPerfil != null}" th:src="${session.usuarioLogueado.fotoPerfil}" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;">
+                <span th:if="${session.usuarioLogueado.fotoPerfil == null}">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </span> Mi Perfil
+            </a>
+        </div>
+    </div>
+
+    <div class="container" style="max-width: 900px;">
+        <h1>Tu Carrito de Compras</h1>
+        
+        <table th:if="${session.carrito != null and !session.carrito.isEmpty()}" class="cart-table">
+            <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+                <th>Acción</th>
+            </tr>
+            <tr th:each="item : ${session.carrito}">
+                <td>
+                    <strong th:text="${item.producto.nombre}"></strong>
+                    <div th:if="${item.talla != null and !item.talla.isEmpty()}" style="font-size: 13px; color: var(--text-muted);">
+                        Talla: <span th:text="${item.talla}"></span>
+                    </div>
+                </td>
+                <td th:text="'S/ ' + ${item.producto.precio}"></td>
+                <td>
+                    <form th:action="@{/carrito/actualizar}" method="post" style="display:inline-flex; align-items:center; gap:5px;">
+                        <input type="hidden" name="id" th:value="${item.producto.idProducto}">
+                        <input type="number" name="cant" th:value="${item.cantidad}" min="1" class="form-control" style="width: 70px; padding: 5px;">
+                        <button type="submit" class="btn" style="padding: 5px 10px; font-size:12px;">Actualizar</button>
+                    </form>
+                </td>
+                <td th:text="'S/ ' + ${item.subtotal}"></td>
+                <td>
+                    <a th:href="@{/carrito/eliminar(id=${item.producto.idProducto}, talla=${item.talla})}" style="color: #ef4444; font-weight:bold; text-decoration:none;">X Eliminar</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align: right; font-weight: bold; border-top: 2px solid #cbd5e1;">TOTAL:</td>
+                <td th:text="'S/ ' + ${total}" style="font-weight: bold; color: var(--accent); border-top: 2px solid #cbd5e1; font-size:18px;"></td>
+            </tr>
+        </table>
+        
+        <p th:if="${session.carrito == null or session.carrito.isEmpty()}">Tu carrito está vacío.</p>
+        
+        <div class="checkout-card" th:if="${session.carrito != null and !session.carrito.isEmpty()}">
+            <h2 style="margin-top:0;">Checkout y Pago</h2>
+            
+            <div th:if="${session.usuarioLogueado == null}" style="text-align: center; padding: 20px;">
+                <p>Para continuar con tu compra, necesitas iniciar sesión o registrarte.</p>
+                <a th:href="@{/login}" class="btn">Iniciar Sesión / Registrarse</a>
+            </div>
+            
+            <div th:if="${session.usuarioLogueado != null}">
+                <p>Hola <strong th:text="${session.usuarioLogueado.nombres}"></strong>, estás a un paso de completar tu pedido.</p>
+                <p style="color: #64748b;">Por favor, transfiere el total mediante Yape o Plin al número <strong>999 999 999</strong> y adjunta el código y captura de operación.</p>
+                
+                <form th:action="@{/carrito/checkout}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label style="font-weight: bold; font-size: 14px;">App de Pago</label>
+                        <select name="metodoPago" class="form-control">
+                            <option value="Yape">Yape</option>
+                            <option value="Plin">Plin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-weight: bold; font-size: 14px;">Código de Voucher / Operación</label>
+                        <input type="text" name="codigoVoucher" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-weight: bold; font-size: 14px;">Captura del Voucher</label>
+                        <input type="file" name="archivoVoucher" class="form-control" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%; font-size: 18px; font-weight: bold;">Finalizar y Enviar Pedido</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
