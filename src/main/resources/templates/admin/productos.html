@@ -27,38 +27,38 @@
         <div class="content-grid">
             
             <div class="form-section">
-                <h3 style="margin-top: 0;">Registrar Producto</h3>
-                <form th:action="@{/admin/productos/guardar}" th:object="${producto}" method="post" enctype="multipart/form-data">
-                    <input type="hidden" th:field="*{idProducto}">
+                <h3 style="margin-top: 0;" id="formTitle">Registrar Producto</h3>
+                <form id="producto-form" th:action="@{/admin/productos/guardar}" th:object="${producto}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" th:field="*{idProducto}" id="idProducto">
                     
                     <label>Nombre del Producto</label>
-                    <input type="text" th:field="*{nombre}" class="form-control" placeholder="Ej: Polo Deportivo Nike" required>
+                    <input type="text" th:field="*{nombre}" id="nombre" class="form-control" placeholder="Ej: Polo Deportivo Nike" required>
                     
                     <label>Categoría</label>
-                    <select th:field="*{categoria}" class="form-control" required>
+                    <select th:field="*{categoria}" id="categoria" class="form-control" required>
                         <option value="DEPORTIVO">Deportivo</option>
                         <option value="CASUAL">Casual</option>
                         <option value="ACCESORIO">Accesorio</option>
                     </select>
                     
                     <label>Descripción</label>
-                    <textarea th:field="*{descripcion}" class="form-control" rows="3" placeholder="Descripción del producto"></textarea>
+                    <textarea th:field="*{descripcion}" id="descripcion" class="form-control" rows="3" placeholder="Descripción del producto"></textarea>
                     
                     <label>Tallas Disponibles (Separadas por comas, ej: S,M,L,XL)</label>
-                    <input type="text" th:field="*{tallasDisponibles}" class="form-control" placeholder="Dejar vacío si no aplica">
+                    <input type="text" th:field="*{tallasDisponibles}" id="tallasDisponibles" class="form-control" placeholder="Dejar vacío si no aplica">
                     
                     <label>Precio (S/)</label>
-                    <input type="number" step="0.01" th:field="*{precio}" class="form-control" value="0.00" required>
+                    <input type="number" step="0.01" th:field="*{precio}" id="precio" class="form-control" value="0.00" required>
                     
                     <label>Stock</label>
-                    <input type="number" th:field="*{stock}" class="form-control" value="0" required>
+                    <input type="number" th:field="*{stock}" id="stock" class="form-control" value="0" required>
                     
-                    <label>Imagen Principal (Portada)</label>
-                    <input type="file" name="archivoImagen" class="form-control" accept="image/*">
+                    <label>Imagen Principal (Opcional si edita)</label>
+                    <input type="file" name="archivoImagen" id="archivoImagen" class="form-control" accept="image/*">
                     <input type="hidden" th:field="*{imagenBase64}">
                     
-                    <label>Imágenes Extra (Opcional, puede seleccionar varias)</label>
-                    <input type="file" name="archivosExtra" class="form-control" accept="image/*" multiple>
+                    <label>Imágenes Extra (Opcional)</label>
+                    <input type="file" name="archivosExtra" id="archivosExtra" class="form-control" accept="image/*" multiple>
                     
                     <button type="submit" class="btn" style="width: 100%;">Guardar Producto</button>
                 </form>
@@ -91,7 +91,17 @@
                             <td th:text="'S/ ' + ${p.precio}"></td>
                             <td th:text="${p.stock} + ' unidades'"></td>
                             <td>
-                                <a th:href="@{/admin/productos/eliminar/{id}(id=${p.idProducto})}" style="color: red; font-size: 12px; font-weight: bold; text-decoration: none;">Eliminar</a>
+                                <a href="#" 
+                                   th:data-id="${p.idProducto}"
+                                   th:data-nombre="${p.nombre}"
+                                   th:data-categoria="${p.categoria}"
+                                   th:data-descripcion="${p.descripcion}"
+                                   th:data-precio="${p.precio}"
+                                   th:data-stock="${p.stock}"
+                                   th:data-tallas="${p.tallasDisponibles}"
+                                   onclick="cargarDatosEdicion(this); return false;" 
+                                   style="color: #2563eb; font-size: 13px; font-weight: bold; text-decoration: none; margin-right: 15px;">Editar</a>
+                                <a th:href="@{/admin/productos/eliminar/{id}(id=${p.idProducto})}" style="color: #ef4444; font-size: 13px; font-weight: bold; text-decoration: none;" onclick="return confirm('¿Estás seguro de eliminar este producto?');">Eliminar</a>
                             </td>
                         </tr>
                     </tbody>
@@ -100,5 +110,44 @@
             
         </div>
     </div>
+    </div>
+
+    <script>
+        function cargarDatosEdicion(btn) {
+            document.getElementById('idProducto').value = btn.getAttribute('data-id');
+            document.getElementById('nombre').value = btn.getAttribute('data-nombre');
+            document.getElementById('categoria').value = btn.getAttribute('data-categoria');
+            document.getElementById('descripcion').value = btn.getAttribute('data-descripcion') || '';
+            document.getElementById('tallasDisponibles').value = btn.getAttribute('data-tallas') || '';
+            document.getElementById('precio').value = btn.getAttribute('data-precio');
+            document.getElementById('stock').value = btn.getAttribute('data-stock');
+            
+            document.getElementById('formTitle').innerText = 'Editar Producto';
+            
+            let btnCancel = document.getElementById('btnCancelar');
+            if(!btnCancel) {
+                btnCancel = document.createElement('button');
+                btnCancel.id = 'btnCancelar';
+                btnCancel.type = 'button';
+                btnCancel.innerText = 'Cancelar Edición';
+                btnCancel.className = 'btn';
+                btnCancel.style.backgroundColor = '#64748b';
+                btnCancel.style.marginTop = '10px';
+                btnCancel.style.width = '100%';
+                btnCancel.onclick = cancelarEdicion;
+                document.getElementById('producto-form').appendChild(btnCancel);
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function cancelarEdicion() {
+            document.getElementById('idProducto').value = '0';
+            document.getElementById('producto-form').reset();
+            document.getElementById('formTitle').innerText = 'Registrar Producto';
+            const btnCancel = document.getElementById('btnCancelar');
+            if (btnCancel) btnCancel.remove();
+        }
+    </script>
 </body>
 </html>

@@ -44,7 +44,8 @@ CREATE TABLE producto (
     precio DECIMAL(10,2) NOT NULL,
     stock INT NOT NULL DEFAULT 0,
     imagen_base64 LONGTEXT,
-    tallas_disponibles VARCHAR(100)
+    tallas_disponibles VARCHAR(100),
+    estado VARCHAR(20) DEFAULT 'Activo'
 );
 
 -- Tabla Producto Imágenes Extra
@@ -144,7 +145,7 @@ END//
 DROP PROCEDURE IF EXISTS usp_listar_productos//
 CREATE PROCEDURE usp_listar_productos()
 BEGIN
-    SELECT * FROM producto;
+    SELECT * FROM producto WHERE estado = 'Activo';
 END//
 
 DROP PROCEDURE IF EXISTS usp_obtener_producto_por_id//
@@ -211,7 +212,7 @@ END//
 DROP PROCEDURE IF EXISTS usp_eliminar_producto//
 CREATE PROCEDURE usp_eliminar_producto(IN p_id INT)
 BEGIN
-    DELETE FROM producto WHERE id_producto = p_id;
+    UPDATE producto SET estado = 'Inactivo' WHERE id_producto = p_id;
 END//
 
 DROP PROCEDURE IF EXISTS usp_insertar_pedido//
@@ -261,6 +262,13 @@ CREATE PROCEDURE usp_validar_pago_pedido(
 )
 BEGIN
     UPDATE pedido SET estado = p_nuevo_estado WHERE id_pedido = p_id_pedido;
+    
+    IF p_nuevo_estado = 'Cancelado' THEN
+        UPDATE producto pr
+        INNER JOIN detalle_pedido dp ON pr.id_producto = dp.id_producto
+        SET pr.stock = pr.stock + dp.cantidad
+        WHERE dp.id_pedido = p_id_pedido;
+    END IF;
 END//
 
 DROP PROCEDURE IF EXISTS usp_listar_pedidos_cliente//

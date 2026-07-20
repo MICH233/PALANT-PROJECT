@@ -13,6 +13,7 @@ public class Producto {
     private String imagenBase64;
     private List<ProductoImagen> imagenesExtra = new ArrayList<>();
     private String tallasDisponibles;
+    private String estado;
 
     // Getters and Setters
     public int getIdProducto() { return idProducto; }
@@ -35,4 +36,7 @@ public class Producto {
     
     public String getTallasDisponibles() { return tallasDisponibles; }
     public void setTallasDisponibles(String tallasDisponibles) { this.tallasDisponibles = tallasDisponibles; }
+    
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 }

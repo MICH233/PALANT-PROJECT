@@ -12,18 +12,18 @@
             <img th:src="@{/assets/favicon.png}" alt="Logo PALANT" style="height: 40px; margin-right: 15px; object-fit: contain;">
             <a th:href="@{/catalogo}">Volver al Catálogo</a>
         </div>
-        <div>
-            <a th:href="@{/carrito}">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right:4px;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg> Carrito
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <a href="#" onclick="openCart(event)" style="display: inline-flex; align-items: center; gap: 5px; color: white; text-decoration: none; font-weight: bold; transition: color 0.3s;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg> Carrito
             </a>
-            <a th:if="${session.usuarioLogueado == null}" th:href="@{/login}" class="btn" style="color: var(--nav-gradient); padding: 5px 15px; margin-left:15px;">Iniciar sesión</a>
-            <a th:if="${session.usuarioLogueado != null}" th:href="@{/perfil}" style="margin-left:15px; display:inline-flex; align-items:center; gap:5px;">
+            <a th:if="${session.usuarioLogueado == null}" th:href="@{/login}" class="btn" style="color: var(--nav-gradient); padding: 6px 15px;">Iniciar sesión</a>
+            <a th:if="${session.usuarioLogueado != null}" th:href="@{/perfil}" style="display:inline-flex; align-items:center; gap:5px;">
                 <img th:if="${session.usuarioLogueado.fotoPerfil != null}" th:src="${session.usuarioLogueado.fotoPerfil}" style="width:25px; height:25px; border-radius:50%; object-fit:cover;">
-                <span th:if="${session.usuarioLogueado.fotoPerfil == null}">
+                <span th:if="${session.usuarioLogueado.fotoPerfil == null}" style="display: flex; align-items: center;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                 </span> Perfil
             </a>
-            <a th:if="${session.usuarioLogueado != null}" th:href="@{/logout}" class="btn" style="background: #ef4444; color: white; padding: 5px 15px; margin-left:10px;">Salir</a>
+            <a th:if="${session.usuarioLogueado != null}" th:href="@{/logout}" class="btn" style="background: #ef4444; color: white; padding: 6px 15px;">Salir</a>
         </div>
     </div>
 
@@ -36,9 +36,9 @@
                 <span th:if="${producto.imagenBase64 == null}" style="color: #94a3b8; font-size:24px;">Sin Imagen</span>
             </div>
             
-            <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;" th:if="${producto.imagenesExtra != null and !producto.imagenesExtra.isEmpty()}">
-                <img th:src="${producto.imagenBase64}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid var(--accent);" onclick="changeMainImage(this.src)">
-                <img th:each="imgExtra : ${producto.imagenesExtra}" th:src="${imgExtra.imagenBase64}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent;" onclick="changeMainImage(this.src)">
+            <div id="thumbContainer" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;" th:if="${producto.imagenesExtra != null and !producto.imagenesExtra.isEmpty()}">
+                <img class="thumb-img" th:src="${producto.imagenBase64}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 3px solid #104573;" onclick="changeMainImage(this, this.src)">
+                <img th:each="imgExtra : ${producto.imagenesExtra}" class="thumb-img" th:src="${imgExtra.imagenBase64}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 3px solid transparent;" onclick="changeMainImage(this, this.src)">
             </div>
         </div>
         
@@ -56,10 +56,24 @@
                 <span th:text="${producto.stock} + ' en stock'" th:style="${producto.stock > 0 ? 'color:#16a34a;' : 'color:#ef4444;'}">0 en stock</span>
             </div>
             
-            <form th:action="@{/carrito/agregar}" method="post" th:if="${producto.stock > 0}">
+            <form th:action="@{/carrito/agregar}" method="post" th:if="${producto.stock > 0}" onsubmit="return validateSelection()">
                 <input type="hidden" name="id" th:value="${producto.idProducto}">
                 
                 <div style="margin-bottom: 20px;">
+                    <div style="margin-bottom: 20px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:8px; color: #475569;">Género</label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                            <label style="cursor: pointer;">
+                                <input type="radio" name="genero" value="Hombre" required style="display:none;" onchange="updateGenderUI(this)">
+                                <span class="gender-btn" style="display: inline-block; padding: 10px 18px; border: 2px solid #e2e8f0; border-radius: 8px; font-weight: bold; color: #475569; transition: all 0.2s; user-select: none;">Hombre</span>
+                            </label>
+                            <label style="cursor: pointer;">
+                                <input type="radio" name="genero" value="Mujer" required style="display:none;" onchange="updateGenderUI(this)">
+                                <span class="gender-btn" style="display: inline-block; padding: 10px 18px; border: 2px solid #e2e8f0; border-radius: 8px; font-weight: bold; color: #475569; transition: all 0.2s; user-select: none;">Mujer</span>
+                            </label>
+                        </div>
+                    </div>
+
                     <div th:if="${producto.tallasDisponibles != null and !producto.tallasDisponibles.isEmpty()}" style="margin-bottom: 20px;">
                         <label style="display:block; font-weight:bold; margin-bottom:8px; color: #475569;">Talla</label>
                         <div style="display: flex; flex-wrap: wrap; gap: 10px;">
@@ -90,24 +104,117 @@
         </div>
     </div>
     
+    </div>
+
+    <!-- CART DRAWER -->
+    <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+    <div class="cart-drawer" id="cartDrawer" th:classappend="${param.cart != null} ? 'open' : ''">
+        <div class="cart-drawer-header">
+            <h2 style="color: white; margin: 0; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path></svg> Tu Carrito
+            </h2>
+            <button class="close-cart-btn" onclick="closeCart()">×</button>
+        </div>
+        <div class="cart-drawer-body">
+            <div th:if="${session.carrito == null or session.carrito.isEmpty()}" class="cart-drawer-empty">
+                Tu carrito está vacío.
+            </div>
+            <div th:if="${session.carrito != null and !session.carrito.isEmpty()}">
+                <div class="cart-drawer-item" th:each="item : ${session.carrito}">
+                    <img th:if="${item.producto.imagenBase64 != null}" th:src="${item.producto.imagenBase64}" class="cart-drawer-item-img">
+                    <div th:if="${item.producto.imagenBase64 == null}" class="cart-drawer-item-img" style="background:#e2e8f0; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:10px;">Sin Img</div>
+                    
+                    <div class="cart-drawer-item-info">
+                        <p class="cart-drawer-item-title" th:text="${item.producto.nombre}"></p>
+                        <p class="cart-drawer-item-meta" th:if="${item.talla != null}" th:text="'Talla: ' + ${item.talla}"></p>
+                        <p class="cart-drawer-item-meta" th:text="'Cant: ' + ${item.cantidad}"></p>
+                        <p class="cart-drawer-item-price" th:text="'S/ ' + ${item.subtotal}"></p>
+                    </div>
+                    
+                    <div class="cart-drawer-item-actions">
+                        <a th:href="@{/carrito/eliminar(id=${item.producto.idProducto}, talla=${item.talla})}" class="cart-drawer-item-delete">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> Eliminar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cart-drawer-footer" th:if="${session.carrito != null and !session.carrito.isEmpty()}">
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:bold; font-size:18px;">
+                <span>Total:</span>
+                <span style="color:var(--accent);" th:text="'S/ ' + ${#aggregates.sum(session.carrito.![subtotal])}"></span>
+            </div>
+            <a th:href="@{/carrito}" class="add-btn" style="display:block; text-align:center; text-decoration:none;">Ir a Pagar</a>
+        </div>
+    </div>
+
     <script>
-        function changeMainImage(src) {
-            document.getElementById('mainImage').src = src;
-        }
         function updateSizeUI(radio) {
-            // Reset all styles
             document.querySelectorAll('.size-btn').forEach(btn => {
                 btn.style.borderColor = '#e2e8f0';
                 btn.style.backgroundColor = 'transparent';
                 btn.style.color = '#475569';
             });
-            // Apply style to selected
             if(radio.checked) {
                 const selectedSpan = radio.nextElementSibling;
-                selectedSpan.style.borderColor = '#84cc16'; // var(--accent)
+                selectedSpan.style.borderColor = '#84cc16';
                 selectedSpan.style.backgroundColor = '#84cc16';
                 selectedSpan.style.color = '#ffffff';
             }
+        }
+        function updateGenderUI(radio) {
+            document.querySelectorAll('.gender-btn').forEach(btn => {
+                btn.style.borderColor = '#e2e8f0';
+                btn.style.backgroundColor = 'transparent';
+                btn.style.color = '#475569';
+            });
+            if(radio.checked) {
+                const selectedSpan = radio.nextElementSibling;
+                selectedSpan.style.borderColor = '#104573';
+                selectedSpan.style.backgroundColor = '#104573';
+                selectedSpan.style.color = '#ffffff';
+            }
+        }
+        function changeMainImage(element, src) {
+            document.getElementById('mainImage').src = src;
+            document.querySelectorAll('.thumb-img').forEach(img => {
+                img.style.borderColor = 'transparent';
+            });
+            element.style.borderColor = '#104573';
+        }
+        
+        function openCart(e) {
+            if(e) e.preventDefault();
+            document.getElementById('cartOverlay').classList.add('show');
+            document.getElementById('cartDrawer').classList.add('open');
+        }
+        function closeCart() {
+            document.getElementById('cartOverlay').classList.remove('show');
+            document.getElementById('cartDrawer').classList.remove('open');
+            if(window.location.search.includes('cart=open')) {
+                const newUrl = window.location.pathname + window.location.search.replace(/[\?&]cart=open/, '').replace(/^&/, '?');
+                window.history.replaceState({}, '', newUrl || window.location.pathname);
+            }
+        }
+        window.addEventListener('DOMContentLoaded', () => {
+            if(window.location.search.includes('cart=open')) {
+                document.getElementById('cartOverlay').classList.add('show');
+            }
+        });
+
+        function validateSelection() {
+            const hasGender = document.querySelector('input[name="genero"]');
+            const hasSize = document.querySelector('input[name="talla"]');
+            
+            if (hasGender && !document.querySelector('input[name="genero"]:checked')) {
+                alert('Por favor, selecciona un Género (Hombre o Mujer) antes de añadir al carrito.');
+                return false;
+            }
+            if (hasSize && !document.querySelector('input[name="talla"]:checked')) {
+                alert('Por favor, selecciona una Talla antes de añadir al carrito.');
+                return false;
+            }
+            return true;
         }
     </script>
 </body>
